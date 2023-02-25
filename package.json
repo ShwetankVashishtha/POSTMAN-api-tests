@@ -1,0 +1,23 @@
+{
+  "name": "postman-api-automationn",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "newman run collection/postman-api-automation.postman_collection.json -e env/postman-api-automation.postman_environment.json -r htmlextra"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShwetankVashishtha/postman-api-automation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShwetankVashishtha/postman-api-automation/issues"
+  },
+  "homepage": "https://github.com/ShwetankVashishtha/postman-api-automation#readme",
+  "devDependencies": {
+    "newman": "4.5.0",
+    "newman-reporter-htmlextra": "1.7.4"
+  }
+}

@@ -1,0 +1,178 @@
+{
+	"info": {
+		"_postman_id": "a3603209-fd6d-4a5b-a252-2720462c81eb",
+		"name": "postman-api-automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "495687"
+	},
+	"item": [
+		{
+			"name": "globals",
+			"item": [
+				{
+					"name": "add bdd support",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"postman.setGlobalVariable('postmanBDD', responseBody);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://gist.githubusercontent.com/ShwetankVashishtha/81235a8e22f3705653ce9f992977a28a/raw/142b632ecb0d3da57be5b8bc38d06db944c79d91/bdd_testing_framework",
+							"protocol": "https",
+							"host": [
+								"gist",
+								"githubusercontent",
+								"com"
+							],
+							"path": [
+								"ShwetankVashishtha",
+								"81235a8e22f3705653ce9f992977a28a",
+								"raw",
+								"142b632ecb0d3da57be5b8bc38d06db944c79d91",
+								"bdd_testing_framework"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.postmanBDD);",
+									"",
+									"pm.collectionVariables.set(\"userId\", responseBody.id);",
+									"",
+									"describe (\"response\", function () {",
+									"    it('should be a successful response', () => {",
+									"        response.ok.should.be.true;",
+									"        response.should.have.status(201);",
+									"        response.error.should.be.false;",
+									"    });",
+									"",
+									"    it('should respond in a timely manner', () => {",
+									"        response.time.should.be.below(2000);",
+									"    });",
+									"",
+									"    it('should return JSON with expected headers', () => {",
+									"        response.should.be.json;",
+									"        response.should.have.header('Content-Type', 'application/json; charset=utf-8');",
+									"        response.type.should.equal('application/json');",
+									"        response.charset.should.equal('utf-8');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"morpheus\",\n    \"job\": \"leader\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"eval(globals.postmanBDD);",
+									"",
+									"describe (\"response\", function () {",
+									"    it('should be a successful response', () => {",
+									"        response.ok.should.be.true;",
+									"        response.should.have.status(200);",
+									"        response.error.should.be.false;",
+									"    });",
+									"",
+									"    it('should respond in a timely manner', () => {",
+									"        response.time.should.be.below(2000);",
+									"    });",
+									"",
+									"    it('should return JSON with expected headers', () => {",
+									"        response.should.be.json;",
+									"        response.should.have.header('Content-Type', 'application/json; charset=utf-8');",
+									"        response.type.should.equal('application/json');",
+									"        response.charset.should.equal('utf-8');",
+									"    });",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users?user={{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							],
+							"query": [
+								{
+									"key": "user",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "clientId",
+			"value": ""
+		},
+		{
+			"key": "userId",
+			"value": ""
+		}
+	]
+}
