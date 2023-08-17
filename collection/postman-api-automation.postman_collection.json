@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "a3603209-fd6d-4a5b-a252-2720462c81eb",
+		"_postman_id": "72c15761-3770-4934-887c-b7a7e277c2fe",
 		"name": "postman-api-automation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "495687"
+		"_exporter_id": "27593350",
+		"_collection_link": "https://qa-fiction.postman.co/workspace/QA-Fiction-Workspace~339c2e6f-552f-4662-8e35-1704a211fb01/collection/27593350-72c15761-3770-4934-887c-b7a7e277c2fe?action=share&source=collection_link&creator=27593350"
 	},
 	"item": [
 		{
@@ -16,7 +17,10 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"postman.setGlobalVariable('postmanBDD', responseBody);"
+									"pm.collectionVariables.set('postmanBDD', responseBody);",
+									"",
+									"        ",
+									"        "
 								],
 								"type": "text/javascript"
 							}
@@ -56,15 +60,26 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"eval(globals.postmanBDD);",
+									"eval(pm.collectionVariables.get(\"postmanBDD\"));",
 									"",
-									"pm.collectionVariables.set(\"userId\", responseBody.id);",
+									"var jsonData = JSON.parse(responseBody);",
+									"var name = pm.collectionVariables.get(\"name\");",
+									"var job = pm.collectionVariables.get(\"job\");",
 									"",
-									"describe (\"response\", function () {",
-									"    it('should be a successful response', () => {",
-									"        response.ok.should.be.true;",
+									"pm.collectionVariables.set(\"id\", jsonData.id);",
+									"",
+									"describe(\"response\", function () {",
+									"    it('validate successful response code', () => {",
 									"        response.should.have.status(201);",
 									"        response.error.should.be.false;",
+									"    });",
+									"",
+									"    it('validate successful response message', () => {",
+									"        pm.response.to.have.status(\"Created\");",
+									"    });",
+									"",
+									"    it('should contain the un-parsed JSON text', () => {",
+									"        response.text.should.be.a('string').with.length.above(10);",
 									"    });",
 									"",
 									"    it('should respond in a timely manner', () => {",
@@ -77,7 +92,37 @@
 									"        response.type.should.equal('application/json');",
 									"        response.charset.should.equal('utf-8');",
 									"    });",
-									"});"
+									"",
+									"    it('should contain the parsed JSON object', () => {",
+									"        response.body.should.be.an('object').with.keys(['name', 'job', 'id', 'createdAt']);",
+									"    });",
+									"",
+									"    it('should contain the expected content', () => {",
+									"        assert.equal(response.body.name, name);",
+									"        assert.equal(response.body.job, job);",
+									"    });",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function makeid(length) {",
+									"    var result           = '';",
+									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
+									"    var charactersLength = characters.length;",
+									"    for ( var i = 0; i < length; i++ ) {",
+									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
+									"      }",
+									"   return result;",
+									"}",
+									"",
+									"pm.collectionVariables.set(\"name\", 'auto_test_name' + makeid(6));",
+									"pm.collectionVariables.set(\"job\", 'auto_test_job' + makeid(6));"
 								],
 								"type": "text/javascript"
 							}
@@ -88,7 +133,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"name\": \"morpheus\",\n    \"job\": \"leader\"\n}",
+							"raw": "{\n    \"name\": \"{{name}}\",\n    \"job\": \"{{job}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -115,24 +160,51 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"eval(globals.postmanBDD);",
+									"eval(pm.collectionVariables.get(\"postmanBDD\"));",
 									"",
-									"describe (\"response\", function () {",
-									"    it('should be a successful response', () => {",
-									"        response.ok.should.be.true;",
-									"        response.should.have.status(200);",
-									"        response.error.should.be.false;",
-									"    });",
-									"",
-									"    it('should respond in a timely manner', () => {",
-									"        response.time.should.be.below(2000);",
-									"    });",
-									"",
-									"    it('should return JSON with expected headers', () => {",
+									"describe(\"response\", function () {",
+									"    it('should return JSON', () => {",
 									"        response.should.be.json;",
 									"        response.should.have.header('Content-Type', 'application/json; charset=utf-8');",
 									"        response.type.should.equal('application/json');",
-									"        response.charset.should.equal('utf-8');",
+									"    });",
+									"",
+									"    it('should contain the parsed JSON object', () => {",
+									"        response.body.data.should.be.an('array').and.not.empty;",
+									"        response.body.support.should.be.an('object').and.not.empty;",
+									"        response.body.support.url.should.equal('https://reqres.in/#support-heading');",
+									"    });",
+									"});",
+									"",
+									"it('should contain the parsed JSON object', () => {",
+									"    const responseData = pm.response.json();",
+									"",
+									"    pm.expect(responseData).to.be.an('object');",
+									"    pm.expect(responseData).to.have.property('page');",
+									"    pm.expect(responseData).to.have.property('per_page');",
+									"    pm.expect(responseData).to.have.property('total');",
+									"    pm.expect(responseData).to.have.property('total_pages');",
+									"    pm.expect(responseData).to.have.property('data');",
+									"    pm.expect(responseData).to.have.property('support');",
+									"});",
+									"",
+									"it('should contain the parsed JSON object', () => {",
+									"    pm.test(\"Email is in valid format\", function () {",
+									"        const responseData = pm.response.json();",
+									"        if (pm.expect(responseData.data).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Array should not be empty\")) {",
+									"            responseData.data.forEach(function (user) {",
+									"                pm.expect(user.email).to.be.a('string');",
+									"            });",
+									"        }",
+									"    });",
+									"});",
+									"",
+									"it('should contain the parsed JSON object', () => {",
+									"    pm.test(\"The 'data' array is present in the response and contains at least one element\", function () {",
+									"        const responseData = pm.response.json();",
+									"",
+									"        pm.expect(responseData.data).to.exist.and.to.be.an('array');",
+									"        pm.expect(responseData.data.length).to.be.at.least(1);",
 									"    });",
 									"});"
 								],
@@ -144,7 +216,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/users?user={{userId}}",
+							"raw": "{{baseUrl}}/api/users?user={{id}}",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -155,7 +227,7 @@
 							"query": [
 								{
 									"key": "user",
-									"value": "{{userId}}"
+									"value": "{{id}}"
 								}
 							]
 						}
@@ -165,13 +237,45 @@
 			]
 		}
 	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
 	"variable": [
 		{
-			"key": "clientId",
+			"key": "postmanBDD",
 			"value": ""
 		},
 		{
-			"key": "userId",
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "job",
+			"value": ""
+		},
+		{
+			"key": "id",
+			"value": ""
+		},
+		{
+			"key": "jwt_token",
 			"value": ""
 		}
 	]

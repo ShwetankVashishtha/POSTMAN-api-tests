@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/ShwetankVashishtha/postman-api-automation#readme",
   "devDependencies": {
-    "newman": "4.5.0",
-    "newman-reporter-htmlextra": "1.7.4"
+    "newman": "5.3.2",
+    "newman-reporter-htmlextra": "1.22.11"
   }
 }
