@@ -1,214 +1,62 @@
 {
 	"info": {
-		"_postman_id": "72c15761-3770-4934-887c-b7a7e277c2fe",
+		"_postman_id": "3bae8ea2-f2d9-4ac6-842f-b20dc3f0be63",
 		"name": "postman-api-automation",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "27593350",
-		"_collection_link": "https://qa-fiction.postman.co/workspace/QA-Fiction-Workspace~339c2e6f-552f-4662-8e35-1704a211fb01/collection/27593350-72c15761-3770-4934-887c-b7a7e277c2fe?action=share&source=collection_link&creator=27593350"
+		"_exporter_id": "45052807",
+		"_collection_link": "https://universal-satellite-qa.postman.co/workspace/07e2ac05-b335-433b-8646-80e6bf770718/collection/45052807-3bae8ea2-f2d9-4ac6-842f-b20dc3f0be63?action=share&source=collection_link&creator=45052807"
 	},
 	"item": [
 		{
-			"name": "globals",
+			"name": "CATS",
 			"item": [
 				{
-					"name": "add bdd support",
+					"name": "Get CAT Facts",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set('postmanBDD', responseBody);",
-									"",
-									"        ",
-									"        "
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://gist.githubusercontent.com/ShwetankVashishtha/81235a8e22f3705653ce9f992977a28a/raw/142b632ecb0d3da57be5b8bc38d06db944c79d91/bdd_testing_framework",
-							"protocol": "https",
-							"host": [
-								"gist",
-								"githubusercontent",
-								"com"
-							],
-							"path": [
-								"ShwetankVashishtha",
-								"81235a8e22f3705653ce9f992977a28a",
-								"raw",
-								"142b632ecb0d3da57be5b8bc38d06db944c79d91",
-								"bdd_testing_framework"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "users",
-			"item": [
-				{
-					"name": "create user",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"eval(pm.collectionVariables.get(\"postmanBDD\"));",
-									"",
-									"var jsonData = JSON.parse(responseBody);",
-									"var name = pm.collectionVariables.get(\"name\");",
-									"var job = pm.collectionVariables.get(\"job\");",
-									"",
-									"pm.collectionVariables.set(\"id\", jsonData.id);",
-									"",
-									"describe(\"response\", function () {",
-									"    it('validate successful response code', () => {",
-									"        response.should.have.status(201);",
-									"        response.error.should.be.false;",
-									"    });",
-									"",
-									"    it('validate successful response message', () => {",
-									"        pm.response.to.have.status(\"Created\");",
-									"    });",
-									"",
-									"    it('should contain the un-parsed JSON text', () => {",
-									"        response.text.should.be.a('string').with.length.above(10);",
-									"    });",
-									"",
-									"    it('should respond in a timely manner', () => {",
-									"        response.time.should.be.below(2000);",
-									"    });",
-									"",
-									"    it('should return JSON with expected headers', () => {",
-									"        response.should.be.json;",
-									"        response.should.have.header('Content-Type', 'application/json; charset=utf-8');",
-									"        response.type.should.equal('application/json');",
-									"        response.charset.should.equal('utf-8');",
-									"    });",
-									"",
-									"    it('should contain the parsed JSON object', () => {",
-									"        response.body.should.be.an('object').with.keys(['name', 'job', 'id', 'createdAt']);",
-									"    });",
-									"",
-									"    it('should contain the expected content', () => {",
-									"        assert.equal(response.body.name, name);",
-									"        assert.equal(response.body.job, job);",
-									"    });",
-									"});",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type header is application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response has the required fields - fact and length\", function () {\r",
+									"    const responseData = pm.response.json();\r",
+									"    \r",
+									"    pm.expect(responseData).to.be.an('object');\r",
+									"    pm.expect(responseData).to.have.property('fact');\r",
+									"    pm.expect(responseData).to.have.property('length');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Length is a non-negative integer\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData.length).to.be.a('number');\r",
+									"  pm.expect(responseData.length).to.be.at.least(0);\r",
+									"});\r",
 									""
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
 							"listen": "prerequest",
 							"script": {
 								"exec": [
-									"function makeid(length) {",
-									"    var result           = '';",
-									"    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';",
-									"    var charactersLength = characters.length;",
-									"    for ( var i = 0; i < length; i++ ) {",
-									"      result += characters.charAt(Math.floor(Math.random() * charactersLength));",
-									"      }",
-									"   return result;",
-									"}",
-									"",
-									"pm.collectionVariables.set(\"name\", 'auto_test_name' + makeid(6));",
-									"pm.collectionVariables.set(\"job\", 'auto_test_job' + makeid(6));"
+									""
 								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"name\": \"{{name}}\",\n    \"job\": \"{{job}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/api/users",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"api",
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "list users",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"eval(pm.collectionVariables.get(\"postmanBDD\"));",
-									"",
-									"describe(\"response\", function () {",
-									"    it('should return JSON', () => {",
-									"        response.should.be.json;",
-									"        response.should.have.header('Content-Type', 'application/json; charset=utf-8');",
-									"        response.type.should.equal('application/json');",
-									"    });",
-									"",
-									"    it('should contain the parsed JSON object', () => {",
-									"        response.body.data.should.be.an('array').and.not.empty;",
-									"        response.body.support.should.be.an('object').and.not.empty;",
-									"        response.body.support.url.should.equal('https://reqres.in/#support-heading');",
-									"    });",
-									"});",
-									"",
-									"it('should contain the parsed JSON object', () => {",
-									"    const responseData = pm.response.json();",
-									"",
-									"    pm.expect(responseData).to.be.an('object');",
-									"    pm.expect(responseData).to.have.property('page');",
-									"    pm.expect(responseData).to.have.property('per_page');",
-									"    pm.expect(responseData).to.have.property('total');",
-									"    pm.expect(responseData).to.have.property('total_pages');",
-									"    pm.expect(responseData).to.have.property('data');",
-									"    pm.expect(responseData).to.have.property('support');",
-									"});",
-									"",
-									"it('should contain the parsed JSON object', () => {",
-									"    pm.test(\"Email is in valid format\", function () {",
-									"        const responseData = pm.response.json();",
-									"        if (pm.expect(responseData.data).to.be.an('array').and.to.have.lengthOf.at.least(1, \"Array should not be empty\")) {",
-									"            responseData.data.forEach(function (user) {",
-									"                pm.expect(user.email).to.be.a('string');",
-									"            });",
-									"        }",
-									"    });",
-									"});",
-									"",
-									"it('should contain the parsed JSON object', () => {",
-									"    pm.test(\"The 'data' array is present in the response and contains at least one element\", function () {",
-									"        const responseData = pm.response.json();",
-									"",
-									"        pm.expect(responseData.data).to.exist.and.to.be.an('array');",
-									"        pm.expect(responseData.data.length).to.be.at.least(1);",
-									"    });",
-									"});"
-								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -216,19 +64,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/users?user={{id}}",
+							"raw": "{{base_url}}/fact",
 							"host": [
-								"{{baseUrl}}"
+								"{{base_url}}"
 							],
 							"path": [
-								"api",
-								"users"
-							],
-							"query": [
-								{
-									"key": "user",
-									"value": "{{id}}"
-								}
+								"fact"
 							]
 						}
 					},
